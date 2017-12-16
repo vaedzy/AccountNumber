@@ -27,6 +27,7 @@
                 <value>text/plain;charset=UTF-8</value>
                 <value>application/json;charset=UTF-8</value>
             </list>
+
         </property>
     </bean>
     <!-- 避免IE执行AJAX时,返回JSON出现下载文件 -->
