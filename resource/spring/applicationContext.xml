@@ -20,7 +20,6 @@
     <!-- 配置文件-->
     <context:property-placeholder location="classpath*:jdbc.properties"/>
 
-
     <bean id="stringHttpMessageConverter"
           class="org.springframework.http.converter.StringHttpMessageConverter">
         <property name="supportedMediaTypes">
