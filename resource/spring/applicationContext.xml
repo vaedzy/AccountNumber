@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:jee="http://www.springframework.org/schema/jee" xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:jaxws="http://cxf.apache.org/jaxws"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
+        http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-4.0.xsd
+        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd">
+    <!-- 启用spring mvc 注解 -->
+    <context:annotation-config/>
+    <!-- 自动扫描 @Controller @service-->
+    <context:component-scan base-package="com.account"/>
+    <!-- 配置文件-->
+    <context:property-placeholder location="classpath*:jdbc.properties"/>
+
+    <bean id="stringHttpMessageConverter"
+          class="org.springframework.http.converter.StringHttpMessageConverter">
+        <property name="supportedMediaTypes">
+            <list>
+                <value>text/plain;charset=UTF-8</value>
+                <value>application/json;charset=UTF-8</value>
+            </list>
+        </property>
+    </bean>
+    <!-- 避免IE执行AJAX时,返回JSON出现下载文件 -->
+    <!-- Jackson 是Spring 自带的功能 -->
+    <bean id="mappingJackson2HttpMessageConverter"
+          class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+        <property name="supportedMediaTypes">
+            <list>
+                <value>application/json;charset=UTF-8</value>
+                <value>application/xml;charset=UTF-8</value>
+                <value>text/html;charset=UTF-8</value>
+                <value>text/plain;charset=UTF-8</value>
+                <value>text/xml;charset=UTF-8</value>
+                <value>text/javascript;charset=UTF-8</value>
+            </list>
+        </property>
+    </bean>
+    <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
+        <!-- 配置驱动 -->
+        <property name="driverClass" value="${jdbc.driverClassName}"/>
+        <!-- Url -->
+        <property name="jdbcUrl" value="${jdbc.url}"/>
+        <!-- user -->
+        <property name="user" value="${jdbc.username}"/>
+        <!-- 密码 -->
+        <property name="password" value="${jdbc.password}"/>
+    </bean>
+    <!-- Mybatis  SqlSessionFactory  ibatis -->
+    <bean class="org.mybatis.spring.SqlSessionFactoryBean">
+        <!-- 数据源 -->
+        <property name="dataSource" ref="dataSource"/>
+
+        <!--<property name="mapperLocations" value="classpath*:"/>-->
+        <!--<property name="configLocation" value="classpath:mybaties/mybaties-config.xml"/>-->
+    </bean>
+    <!-- 配置Spring 事务   jdbc -->
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+    <!-- 开启事务注解 -->
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+    <!-- 线程池 -->
+    <bean id="taskExecutor"
+          class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
+        <!--             线程池维护线程的最少数量   -->
+        <property name="corePoolSize" value="3"/>
+        <!--            线程池维护线程所允许的空闲时间   -->
+        <property name="keepAliveSeconds" value="200"/>
+        <!--              线程池维护线程的最大数量   -->
+        <property name="maxPoolSize" value="5"/>
+        <!--              线程池所使用的缓冲队列   -->
+        <property name="queueCapacity" value="25"/>
+    </bean>
+</beans>
