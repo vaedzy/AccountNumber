@@ -19,7 +19,10 @@
     <context:component-scan base-package="com.account"/>
     <!-- 配置文件-->
     <context:property-placeholder location="classpath*:jdbc.properties"/>
-
+    <!--自动扫描mapper.xml对应的mapper接口-->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.account.dao"></property>
+    </bean>
     <bean id="stringHttpMessageConverter"
           class="org.springframework.http.converter.StringHttpMessageConverter">
         <property name="supportedMediaTypes">
