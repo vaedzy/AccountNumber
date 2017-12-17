@@ -45,6 +45,7 @@ public class UserController {
     /*
     验证用户是否存在
      */
+    @RequestMapping("/checkLogin.do")
     public String login(HttpServletRequest request){
         String result="login.do";
         //获得用户手机号并加密
